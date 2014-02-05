@@ -650,7 +650,8 @@ bool CTxDB::LoadBlockIndex()
         return error("CTxDB::LoadBlockIndex() : hashBestChain not found in the block index");
     pindexBest = mapBlockIndex[hashBestChain];
     nBestHeight = pindexBest->nHeight;
-    bnBestChainTrust = pindexBest->bnChainTrust;
+    nBestHeightTime = pindexBest->GetBlockTime();
+	bnBestChainTrust = pindexBest->bnChainTrust;
     printf("LoadBlockIndex(): hashBestChain=%s  height=%d  trust=%s  date=%s\n",
       hashBestChain.ToString().substr(0,20).c_str(), nBestHeight, bnBestChainTrust.ToString().c_str(),
       DateTimeStrFormat("%x %H:%M:%S", pindexBest->GetBlockTime()).c_str());

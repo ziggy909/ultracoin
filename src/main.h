@@ -30,12 +30,8 @@ class CNode;
 // set this to 164 (almost immediately) for ultracoin
 
 //static const int nConsecutiveStakeSwitchHeight = 164;
-
-// chain reset, start at 2
-
+//chain reset, set to 2
 static const int nConsecutiveStakeSwitchHeight = 2;
-
-
 static const unsigned int MAX_BLOCK_SIZE = 1000000;
 static const unsigned int MAX_BLOCK_SIZE_GEN = MAX_BLOCK_SIZE/2;
 static const unsigned int MAX_BLOCK_SIGOPS = MAX_BLOCK_SIZE/50;
@@ -57,14 +53,10 @@ static const int fHaveUPnP = true;
 static const int fHaveUPnP = false;
 #endif
 
-//static const uint256 hashGenesisBlockOfficial("0x00000d64a5d025576cd4bffda16e3cd34b559a167808f06a8e78750729c533f8");
-//static const uint256 hashGenesisBlockTestNet("0x00000ec8c302dac2ada11416fc722b1a47d200854c59c41d212fd35366b88f9a");
-//static const uint256 hashGenesisBlockOfficial("0x000003fa1950c67ee0d374282bc082a4e9a8196b1554884fe3546a0bc7f68d33");
-//static const uint256 hashGenesisBlockTestNet("0x000003fa1950c67ee0d374282bc082a4e9a8196b1554884fe3546a0bc7f68d33");
 static const uint256 hashGenesisBlockOfficial("0x00000957baeb013a79e5d1fa0b8f69ab2e926ea86d392f6a1733eb4054945aee");
 static const uint256 hashGenesisBlockTestNet("0x00000957baeb013a79e5d1fa0b8f69ab2e926ea86d392f6a1733eb4054945aee");
 
-static const int64 nMaxClockDrift = 2 * 60 * 60;        // 2 hours, twas too damn low
+static const int64 nMaxClockDrift = 2 * 60 * 60;        // 2hours
 
 extern CScript COINBASE_FLAGS;
 
@@ -81,6 +73,7 @@ extern CBlockIndex* pindexGenesisBlock;
 extern unsigned int nStakeMinAge;
 extern int nCoinbaseMaturity;
 extern int nBestHeight;
+extern int64 nBestHeightTime;
 extern CBigNum bnBestChainTrust;
 extern CBigNum bnBestInvalidTrust;
 extern uint256 hashBestChain;
@@ -1269,9 +1262,7 @@ public:
             return 0;
         return (IsProofOfStake()? (CBigNum(1)<<256) / (bnTarget+1) : 1);
     }*/
-
     CBigNum GetBlockTrust() const;
-
     bool IsInMainChain() const
     {
         return (pnext || this == pindexBest);
