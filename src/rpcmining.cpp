@@ -147,7 +147,7 @@ Value getnetworkhashps(const Array& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getnetworkhashps\n"
-            "Returns an estimate of the YACoin network hash rate.");
+            "Returns an estimate of the Ultracoin network hash rate.");
 
     return GetNetworkHashPS(params.size() > 0 ? params[0].get_int() : 120);
 }
