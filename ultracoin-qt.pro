@@ -6,22 +6,20 @@ DEFINES += QT_GUI BOOST_THREAD_USE_LIB BOOST_SPIRIT_THREADSAFE SCRYPT_CHACHA SCR
 CONFIG += no_include_pwd
 CONFIG += thread
 
-#Uncomment this section to build on Windows using QtCMD/MinGW. Adjust dep locations as needed!
-#windows:LIBS += -lshlwapi
-#LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
-#LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
-#windows:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
-#LIBS += -lboost_system-mgw46-mt-sd-1_53 -lboost_filesystem-mgw46-mt-sd-1_53 -lboost_program_options-mgw46-mt-sd-1_53 -lboost_thread-mgw46-mt-sd-1_53
-#BOOST_LIB_SUFFIX=-mgw46-mt-sd-1_53
-#BOOST_INCLUDE_PATH=C:/deps/boost
-#BOOST_LIB_PATH=C:/deps/boost/stage/lib
-#BDB_INCLUDE_PATH=c:/deps/db/build_unix
-#BDB_LIB_PATH=c:/deps/db/build_unix
-#OPENSSL_INCLUDE_PATH=c:/deps/openssl-1.0.1g/include
-#OPENSSL_LIB_PATH=c:/deps/openssl-1.0.1g
-#MINIUPNPC_LIB_PATH=c:/deps/miniupnpc
-#MINIUPNPC_INCLUDE_PATH=c:/deps
-
+windows:LIBS += -lshlwapi
+LIBS += $$join(BOOST_LIB_PATH,,-L,) $$join(BDB_LIB_PATH,,-L,) $$join(OPENSSL_LIB_PATH,,-L,) $$join(QRENCODE_LIB_PATH,,-L,)
+LIBS += -lssl -lcrypto -ldb_cxx$$BDB_LIB_SUFFIX
+windows:LIBS += -lws2_32 -lole32 -loleaut32 -luuid -lgdi32
+LIBS += -lboost_system-mgw46-mt-sd-1_53 -lboost_filesystem-mgw46-mt-sd-1_53 -lboost_program_options-mgw46-mt-sd-1_53 -lboost_thread-mgw46-mt-sd-1_53
+BOOST_LIB_SUFFIX=-mgw46-mt-sd-1_53
+BOOST_INCLUDE_PATH=C:/deps/boost
+BOOST_LIB_PATH=C:/deps/boost/stage/lib
+BDB_INCLUDE_PATH=c:/deps/db/build_unix
+BDB_LIB_PATH=c:/deps/db/build_unix
+OPENSSL_INCLUDE_PATH=c:/deps/ssl/include
+OPENSSL_LIB_PATH=c:/deps/ssl
+MINIUPNPC_LIB_PATH=c:/deps/miniupnpc
+MINIUPNPC_INCLUDE_PATH=c:/deps
 OBJECTS_DIR = build
 MOC_DIR = build
 UI_DIR = build
@@ -118,6 +116,8 @@ HEADERS += src/qt/bitcoingui.h \
     src/qt/addresstablemodel.h \
     src/qt/optionsdialog.h \
     src/qt/sendcoinsdialog.h \
+    src/qt/coincontroldialog.h \
+    src/qt/coincontroltreewidget.h \
     src/qt/addressbookpage.h \
     src/qt/signverifymessagedialog.h \
     src/qt/aboutdialog.h \
@@ -128,6 +128,7 @@ HEADERS += src/qt/bitcoingui.h \
     src/base58.h \
     src/bignum.h \
     src/checkpoints.h \
+    src/coincontrol.h \
     src/compat.h \
     src/sync.h \
     src/util.h \
@@ -193,12 +194,14 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/qt/addresstablemodel.cpp \
     src/qt/optionsdialog.cpp \
     src/qt/sendcoinsdialog.cpp \
+    src/qt/coincontroldialog.cpp \
+    src/qt/coincontroltreewidget.cpp \
     src/qt/addressbookpage.cpp \
     src/qt/signverifymessagedialog.cpp \
     src/qt/aboutdialog.cpp \
     src/qt/editaddressdialog.cpp \
     src/qt/bitcoinaddressvalidator.cpp \
-    src/alert.cpp \
+    src/alert.cpp \ 
     src/version.cpp \
     src/sync.cpp \
     src/util.cpp \
@@ -252,13 +255,14 @@ SOURCES += src/qt/bitcoin.cpp src/qt/bitcoingui.cpp \
     src/scrypt-x86_64.S \
     src/scrypt_mine.cpp \
     src/pbkdf2.cpp \
-    src/scrypt-jane/scrypt-jane.c
+    src/scrypt-jane/scrypt-jane.c 
 
 RESOURCES += \
     src/qt/bitcoin.qrc
 
 FORMS += \
     src/qt/forms/sendcoinsdialog.ui \
+    src/qt/forms/coincontroldialog.ui \
     src/qt/forms/addressbookpage.ui \
     src/qt/forms/signverifymessagedialog.ui \
     src/qt/forms/aboutdialog.ui \
