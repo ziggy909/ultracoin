@@ -795,7 +795,7 @@ bool AppInit2()
     }
 
     // ********************************************************* Step 9: import blocks
-
+    filesystem::path oldBlock = OldBlockFilePath();
     if (mapArgs.count("-loadblock"))
     {
         uiInterface.InitMessage(_("Importing blockchain data file."));
@@ -806,6 +806,14 @@ bool AppInit2()
             if (file)
                 LoadExternalBlockFile(file);
         }
+    }else if(filesystem::exists(oldBlock)){
+         uiInterface.InitMessage(_("Updating blockchain data file."));
+         FILE *file = fopen(oldBlock.string().c_str(), "rb");
+         if (file)
+             LoadExternalBlockFile(file);
+         boost::system::error_code ignored_ec;
+         filesystem::remove(oldBlock,ignored_ec);
+         filesystem::remove(GetDataDir() / "blkindex.dat",ignored_ec);
     }
 
     filesystem::path pathBootstrap = GetDataDir() / "bootstrap.dat";
