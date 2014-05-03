@@ -512,12 +512,11 @@ bool CTransaction::CheckTransaction() const
 }
 
 int64 CTransaction::GetMinFee(unsigned int nBlockSize, bool fAllowFree,
-                              enum GetMinFee_mode mode) const
+                              enum GetMinFee_mode mode, unsigned int nBytes) const
 {
     // Base fee is either MIN_TX_FEE or MIN_RELAY_TX_FEE
     int64 nBaseFee = (mode == GMF_RELAY) ? MIN_RELAY_TX_FEE : MIN_TX_FEE;
 
-    unsigned int nBytes = ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION);
     unsigned int nNewBlockSize = nBlockSize + nBytes;
     int64 nMinFee = (1 + (int64)nBytes / 1000) * nBaseFee;
 
@@ -1002,10 +1001,22 @@ int64 GetProofOfWorkReward( int nHeight, uint256 prevHash)
         else if (nHeight < 2)
         {
            nSubsidy = 2000000 * COIN;
-	    }
-	    else
-		{
-           nSubsidy >>= (nHeight / 990000);
+	}
+ 	 else if (nHeight < 240000)
+ 	{
+            nSubsidy = 50 * COIN;
+         }
+         else if (nHeight < 4000000)
+ 	{
+            nSubsidy = 15 * COIN;
+         }
+         else if (nHeight < 6000000)
+ 	{
+            nSubsidy = 10 * COIN;
+         }
+         else if (nHeight < 30000000)
+ 	{
+           nSubsidy = 1 * COIN;
         }
         return nSubsidy;
 }
@@ -2613,97 +2624,17 @@ bool LoadBlockIndex(bool fAllowNew)
         block.nVersion = 1;
         block.nTime    = 1388361608;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
-       //block.nBita = 1d03ffff;
         block.nNonce   = 90210;
 
- 	/*if (false && (block.GetHash() != hashGenesisBlock)) {
-
-		// This will figure out a valid hash and Nonce if you're
-		// creating a different genesis block:
-printf("trying out hashes\n");		    
-uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-		    while (block.GetHash() > hashTarget)
-		       {
-		           ++block.nNonce;
-printf("tried hash\n");		           
-if (block.nNonce == 0)
-		           {
-		               printf("NONCE WRAPPED, incrementing time");
-		               ++block.nTime;
-		           }
-		       }
-        }*/
 
         //// debug print
         printf("block.GetHash() == %s\n", block.GetHash().ToString().c_str());
         printf("block.hashMerkleRoot == %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nNonce = %u \n", block.nNonce);
         assert(block.hashMerkleRoot == uint256("0xe03a8234e63db94e44fbf9078c3f0450667c9f25407827fbf751ad75804fb7dc"));
-block.print();
-if (true && block.GetHash() != hashGenesisBlock)
-        {
-            unsigned int max_nonce = 0xffff0000;
-            block_header res_header;
-            uint256 result;
-            unsigned int nHashesDone = 0;
-            unsigned int nNonceFound;
-            uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
-            printf("hashTarget = %s\n", hashTarget.ToString().c_str());
-
-            do {
-                nNonceFound = scanhash_scrypt(
-                            (block_header *)&block.nVersion,
-                            max_nonce,
-                            nHashesDone,
-                            UBEGIN(result),
-                            &res_header,
-                            GetNfactor(block.nTime)
-                );
-                if ((unsigned int) -1 == nNonceFound || result > hashTarget) {
-                    printf("Hashes done: %d; result = %s...\n", nHashesDone, result.ToString().substr(0, 20).c_str());
-                    block.nTime++;
-                    continue;
-                }
-            } while(result > hashTarget);
-
-            block.nNonce = nNonceFound;
-            printf("\nHash found:\n block.GetHash = %s\n nNonce = %d\n nTime = %d\n", block.GetHash().ToString().c_str(), nNonceFound, block.nTime);
-        }
-/*{
-                    unsigned int max_nonce = 0xffff0000;
-                    block_header res_header;
-                    uint256 result;
-                    unsigned int nHashesDone = 0;
-                    unsigned int nNonceFound;
-                    CBigNum bnTarget;
-                    bnTarget.SetCompact(block.nBits);
-                    printf("about to start loop\n");
-
-                    do {
-                    nNonceFound = scanhash_scrypt(
-                                (block_header *)&block.nVersion,
-                                max_nonce,
-                                nHashesDone,
-                                UBEGIN(result),
-                                &res_header,
-                                GetNfactor(block.nTime)
-);
-	printf("inside loop\n");
-
-                   if (-1 == nNonceFound || result > bnTarget.getuint256()) {
-                        block.nTime++;
-                        continue;
-                      printf("ntime: %u \n", block.nTime);
-                   }
-                   } while(result > bnTarget.getuint256());
-	printf("finished loop\n");
-                    printf("hashfound: %s with nonce %d\n", result.ToString().c_str(), nNonceFound);
-
-                }
-*/
-assert(block.GetHash() == hashGenesisBlock);
-//assert(block.GetHash() == uint256("0x00000f59c12a91c5af9a80274cb01fd5ec644732c5ef6d2841f348c9e806276"));
-//      assert(block.CheckBlock());
+	block.print();
+	assert(block.GetHash() == hashGenesisBlock);
+	assert(block.CheckBlock());
 
         // Start new block file
         unsigned int nFile;
